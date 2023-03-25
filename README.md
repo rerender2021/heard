@@ -17,6 +17,10 @@
 
 ![heard-usage](./docs/images/heard-usage.png)
 
+使用它可以生成 srt 格式字幕：
+
+![srt-demo](./docs/images/srt-demo.png)
+
 <!-- 演示视频见:
 
 -   [回声：实时英语语音翻译](https://www.bilibili.com/video/BV11L411d7HE/) -->
@@ -36,7 +40,6 @@
 
 开发过程中需要确保本机启动了 Whisper 服务器: https://github.com/rerender2021/Whisper-API/releases/tag/1.0.0
 
-
 下载它，并解压到项目下，确保项目目录结构如下：
 
 ```
@@ -48,10 +51,30 @@
 - package.json
 ```
 
+- 此外，还需要安装 cuda 环境，注意版本：11.7：https://developer.nvidia.com/cuda-11-7-0-download-archive?target_os=Windows&target_arch=x86_64
+
+验证 cuda 安装成功：命令行输入 `nvcc -V`，看输出：
+
+```bash
+  Copyright (c) 2005-2022 NVIDIA Corporation
+  Built on Tue_May__3_19:00:59_Pacific_Daylight_Time_2022
+  Cuda compilation tools, release 11.7, V11.7.64
+  Build cuda_11.7.r11.7/compiler.31294372_0
+```
+
+- 运行 Whisper 还需要安装 ffmpeg，验证是否安装成功：`ffmpeg -v`
+
+```bash
+ffmpeg version 2022-02-10-git-b6bb6b9f22-full_build-www.gyan.dev Copyright (c) 2000-2022 the FFmpeg developers
+  built with gcc 11.2.0 (Rev7, Built by MSYS2 project)
+  ...
+```
+
 ## 功能扩展
 
 默认支持 Whisper 类型为 base 的模型（英语 & 多语言），如果需要使用其它模型，可自行下载，并放在 `whisper-gpu-server\model` 下。
-- 模型下载地址：https://github.com/openai/whisper/discussions/63#discussioncomment-3798552
+
+-   模型下载地址：https://github.com/openai/whisper/discussions/63#discussioncomment-3798552
 
 ## 打包发布
 
