@@ -28,18 +28,6 @@ export const controlLayout = {
 		generate: { row: 5, column: 3, columnSpan: 5 },
 
 		progressLabel: { row: 7, column: 0, columnSpan: 4 },
-		progress: { row: 9, column: 0, columnSpan: 8 },
-
-		//
-		measure: { row: 7, column: 0, columnSpan: 7 },
-		recognize: { row: 1, column: 0, columnSpan: 3 },
-		breakLongText: { row: 3, column: 0, columnSpan: 2 },
-		fontSizeLabel: { row: 1, column: 4, columnSpan: 3 },
-
-		topmost: { row: 7, column: 0, columnSpan: 2 },
-		zh: { row: 9, column: 0, columnSpan: 2 },
-		en: { row: 9, column: 2, columnSpan: 2 },
-		fontSize: { row: 11, column: 1, columnSpan: 3 },
-		fontSizeValue: { row: 11, column: 4 },
+		progress: { row: 9, column: 0, columnSpan: 8 }
 	},
 };
