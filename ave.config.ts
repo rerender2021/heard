@@ -4,19 +4,20 @@ const config: IPackConfig = {
   build: {
     projectRoot: __dirname,
     target: "node14-win-x64",
-    input: "./build/src/app.js",
-    output: "./bin/ave-react-app.exe",
-    // debug: true,
+    input: "./dist/_/_/app.js",
+    output: "./bin/heard.exe",
+    // set DEBUG_PKG=1
+    debug: false, 
     edit: false
   },
   resource: {
-    icon: "./assets/ave.ico",
-    productVersion: "0.0.1",
-    productName: "Ave React Template App",
-    fileVersion: "0.0.1",
+    icon: "./assets/heard.ico",
+    productVersion: "1.0.0",
+    productName: "Heard",
+    fileVersion: "1.0.0",
     companyName: "QberSoft",
-    fileDescription: "The Template App of Ave React",
-    LegalCopyright: `© ${new Date().getFullYear()} Ave React Copyright.`,
+    fileDescription: "A simple subtitle generator powered by whisper & avernakis react.",
+    LegalCopyright: `© ${new Date().getFullYear()} QberSoft Copyright.`,
   },
 };
 
