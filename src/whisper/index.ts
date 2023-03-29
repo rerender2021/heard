@@ -54,7 +54,7 @@ export class Whisper {
 		console.log("try to init vosk asr engine");
 		const dir = path.resolve(process.cwd(), "whisper-gpu-server");
 		const exePath = path.resolve(dir, "./Whisper-API.exe");
-		if (dir && exePath) {
+		if (fs.existsSync(dir) && fs.existsSync(exePath)) {
 			return new Promise((resolve, reject) => {
 				console.log("asrDir exists, start asr server", dir);
 
