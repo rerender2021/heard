@@ -21,9 +21,9 @@
 
 ![srt-demo](./docs/images/srt-demo.png)
 
-<!-- 演示视频见:
+演示视频见:
 
--   [回声：实时英语语音翻译](https://www.bilibili.com/video/BV11L411d7HE/) -->
+- [听到了！Whisper & GPU 离线字幕提取](https://www.bilibili.com/video/BV1FN411N7a5/)
 
 # 使用说明
 
