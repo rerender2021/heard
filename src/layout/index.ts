@@ -27,7 +27,7 @@ export const controlLayout = {
 		selectModel: { row: 5, column: 0, columnSpan: 3 },
 		generate: { row: 5, column: 3, columnSpan: 5 },
 
-		progressLabel: { row: 7, column: 0, columnSpan: 4 },
+		progressLabel: { row: 7, column: 0, columnSpan: 8 },
 		progress: { row: 9, column: 0, columnSpan: 8 }
 	},
 };
