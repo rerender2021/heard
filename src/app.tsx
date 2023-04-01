@@ -72,7 +72,8 @@ export function Heard() {
 			console.log(`open file: ${filePath}`);
 
 			if (filePath) {
-				setSrc(filePath);
+				setSrcList([filePath]);
+				setSrcDesc(filePath);
 				setProgressLabelText(Text.ProgressLabel);
 			}
 		}),
