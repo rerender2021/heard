@@ -8,8 +8,8 @@ import axios from "axios";
 import { ProgressType, Whisper } from "./whisper";
 import { useDragDrop } from "./hooks";
 import path from "path";
-import fs from "fs";
 import { getModelList, useModel } from "./config";
+import { writeSubtitleFile } from "./utils.ts";
 
 function onInit(app: App) {
 	const context = getAppContext();
@@ -93,12 +93,8 @@ export function Heard() {
 					setProgressLabelText(`${Text.ProgressLabel}: ${i + 1}/${srcList.length}: ${src}`);
 					const response = await whisper.transcribe(src, promptRef.current);
 					const data = response.data;
-					const dirName = path.dirname(src);
-					const fileName = path.basename(src);
-					console.log(`save subtitle json`, { dirName, fileName });
-
-					const outPath = path.resolve(dirName, `${fileName}.subtitle.json`);
-					fs.writeFileSync(outPath, JSON.stringify(data, null, 4), "utf8");
+					
+					writeSubtitleFile(data, src);
 					await sleep(1500);
 				} catch (error) {
 					console.error(error?.message);

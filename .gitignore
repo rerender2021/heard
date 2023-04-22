@@ -14,3 +14,4 @@ perf
 log
 *.exe
 error.log
+heard.config.json

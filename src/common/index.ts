@@ -5,14 +5,15 @@ export function assetsPath(name: string) {
 	return path.resolve(root, `./${name}`);
 }
 
-export function safe(callback: Function) {
-	return (...args: any[]) => {
+export function safe<T extends Function>(callback: T): T {
+	const f = (...args: any[]) => {
 		try {
 			return callback(...args);
 		} catch (error) {
 			console.error(error);
 		}
-	};
+	}
+	return f as unknown as T;
 }
 
 export async function sleep(time: number) {
