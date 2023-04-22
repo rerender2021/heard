@@ -3,13 +3,13 @@ import { AveRenderer, Grid, Window, getAppContext, IIconResource, IWindowCompone
 import { App, ThemePredefined_Dark } from "ave-ui";
 import { containerLayout, controlLayout } from "./layout";
 import { iconResource } from "./resource";
-import { safe } from "./common";
+import { safe, sleep } from "./common";
 import axios from "axios";
 import { ProgressType, Whisper } from "./whisper";
 import { useDragDrop } from "./hooks";
 import path from "path";
-import fs from "fs";
 import { getModelList, useModel } from "./config";
+import { writeSubtitleFile } from "./utils.ts";
 
 function onInit(app: App) {
 	const context = getAppContext();
@@ -23,9 +23,10 @@ function initTheme() {
 	themeDark.SetStyle(themeImage, 0);
 }
 
-enum ButtonText {
+enum Text {
 	GenerateSubtitle = "生成字幕",
-	OpenFile = "选择文件"
+	OpenFile = "选择文件",
+	ProgressLabel = "进度",
 }
 
 const modelOptions = getModelList().map((each, index) => {
@@ -47,11 +48,18 @@ export function Heard() {
 	const [title, setTitle] = useState("Heard");
 	const [whisperReady, setwhisperReady] = useState(false);
 	const [src, setSrc] = useState<string>("");
+	const [srcDesc, setSrcDesc] = useState<string>("");
+	const [srcList, setSrcList] = useState<Array<string>>([""]);
 	const promptRef = useRef<string>("");
-	useDragDrop((path) => setSrc(path));
+	useDragDrop((pathList) => {
+		setSrcList(pathList);
+		setSrcDesc(pathList.length === 1 ? pathList[0] : `${pathList.length} files`);
+		setProgressLabelText(`${Text.ProgressLabel}: 0/${pathList.length}`);
+	});
 
 	const [progress, setProgress] = useState<ProgressType>(ProgressType.None);
 	const [progressText, setProgressText] = useState<string>("");
+	const [progressLabelText, setProgressLabelText] = useState<string>(Text.ProgressLabel);
 	const [defaultSelectedKey, setDefaultSelectedKey] = useState<string>("1");
 	const [hintText, setHintText] = useState<string>("初始化中...");
 
@@ -64,7 +72,9 @@ export function Heard() {
 			console.log(`open file: ${filePath}`);
 
 			if (filePath) {
-				setSrc(filePath);
+				setSrcList([filePath]);
+				setSrcDesc(filePath);
+				setProgressLabelText(Text.ProgressLabel);
 			}
 		}),
 		[]
@@ -75,19 +85,23 @@ export function Heard() {
 			if (progress !== ProgressType.None) {
 				return;
 			}
-			whisper.transcribe(src, promptRef.current).then(
-				safe((response) => {
-					const data = response.data;
-					const dirName = path.dirname(src);
-					const fileName = path.basename(src);
-					console.log(`save subtitle json`, { dirName, fileName });
 
-					const outPath = path.resolve(dirName, `${fileName}.subtitle.json`);
-					fs.writeFileSync(outPath, JSON.stringify(data, null, 4), "utf8");
-				})
-			);
+			for (let i = 0; i < srcList.length; ++i) {
+				try {
+					const src = srcList[i];
+					setSrc(src);
+					setProgressLabelText(`${Text.ProgressLabel}: ${i + 1}/${srcList.length}: ${src}`);
+					const response = await whisper.transcribe(src, promptRef.current);
+					const data = response.data;
+					
+					writeSubtitleFile(data, src);
+					await sleep(1500);
+				} catch (error) {
+					console.error(error?.message);
+				}
+			}
 		}),
-		[src]
+		[srcList]
 	);
 
 	const startWhisper = safe(() => {
@@ -174,10 +188,10 @@ export function Heard() {
 			<Grid style={{ layout: containerLayout }}>
 				<Grid style={{ area: containerLayout.areas.control, layout: controlLayout }}>
 					<Grid style={{ area: controlLayout.areas.openFile }}>
-						<Button text={ButtonText.OpenFile} langKey="OpenFile" iconInfo={{ name: "open-file" }} onClick={onOpenFile}></Button>
+						<Button text={Text.OpenFile} langKey="OpenFile" iconInfo={{ name: "open-file" }} onClick={onOpenFile}></Button>
 					</Grid>
 					<Grid style={{ area: controlLayout.areas.filePath, margin: "12dpx 0 0 0" }}>
-						<TextBox readonly border={false} text={src}></TextBox>
+						<TextBox readonly border={false} text={srcDesc}></TextBox>
 					</Grid>
 					{whisperReady ? (
 						<>
@@ -191,10 +205,10 @@ export function Heard() {
 								<TextBox ime onChange={onChangePrompt}></TextBox>
 							</Grid>
 							<Grid style={{ area: controlLayout.areas.generate, margin: "12dpx 0 0 0" }}>
-								<Button enable={progress === ProgressType.None} text={ButtonText.GenerateSubtitle} iconInfo={{ name: "cc", size: 16 }} onClick={onTranscribe}></Button>
+								<Button enable={progress === ProgressType.None} text={Text.GenerateSubtitle} iconInfo={{ name: "cc", size: 16 }} onClick={onTranscribe}></Button>
 							</Grid>
 							<Grid style={{ area: controlLayout.areas.progressLabel }}>
-								<TextBox readonly border={false} text="进度"></TextBox>
+								<TextBox readonly border={false} text={progressLabelText}></TextBox>
 							</Grid>
 							<Grid style={{ area: controlLayout.areas.progress }}>
 								<TextBox readonly border={false} text={progressText}></TextBox>

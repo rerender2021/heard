@@ -56,7 +56,7 @@ export class Whisper {
 		const exePath = path.resolve(dir, "./Whisper-API.exe");
 		if (fs.existsSync(dir) && fs.existsSync(exePath)) {
 			return new Promise((resolve, reject) => {
-				console.log("asrDir exists, start asr server", dir);
+				console.log("whisper dir exists, start whisper server", dir);
 
 				const name = getModel();
 				console.log("start whisper server with model: ", name);
